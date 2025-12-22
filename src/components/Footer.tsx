@@ -28,7 +28,7 @@ export default function Footer() {
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                         }}>
-                            BlogHub
+                            InsightHub
                         </h3>
                         <p style={{ color: 'var(--muted)', fontSize: '0.9rem', lineHeight: 1.7 }}>
                             Your daily source for insightful articles, tutorials, and tips on technology,
@@ -137,10 +137,11 @@ export default function Footer() {
                     fontSize: '0.875rem',
                 }}>
                     <p style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.25rem' }}>
-                        © {currentYear} BlogHub. Made with <Heart size={14} fill="var(--primary)" color="var(--primary)" /> All rights reserved.
+                        © {currentYear} InsightHub. Made with <Heart size={14} fill="var(--primary)" color="var(--primary)" /> All rights reserved.
                     </p>
                 </div>
             </div>
         </footer>
     );
 }
+

@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Privacy Policy - BlogHub',
+    title: 'Privacy Policy - InsightHub',
     description: 'Read our privacy policy to understand how we collect, use, and protect your data.',
 };
 
@@ -26,7 +26,7 @@ export default function PrivacyPolicyPage() {
                     <div className="blog-content">
                         <h2>Introduction</h2>
                         <p>
-                            At BlogHub, we take your privacy seriously. This Privacy Policy explains how we collect,
+                            At InsightHub, we take your privacy seriously. This Privacy Policy explains how we collect,
                             use, disclose, and safeguard your information when you visit our website. Please read
                             this privacy policy carefully. If you do not agree with the terms of this privacy policy,
                             please do not access the site.
@@ -130,8 +130,8 @@ export default function PrivacyPolicyPage() {
                             If you have questions or comments about this Privacy Policy, please contact us at:
                         </p>
                         <p>
-                            <strong>BlogHub</strong><br />
-                            Email: privacy@bloghub.com<br />
+                            <strong>InsightHub</strong><br />
+                            Email: privacy@InsightHub.com<br />
                             Address: 123 Blog Street, Content City
                         </p>
                     </div>
@@ -140,3 +140,4 @@ export default function PrivacyPolicyPage() {
         </>
     );
 }
+

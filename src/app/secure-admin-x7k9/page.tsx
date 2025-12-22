@@ -111,7 +111,7 @@ export default function AdminLogin() {
                             <input
                                 type="email"
                                 className="input"
-                                placeholder="admin@bloghub.com"
+                                placeholder="admin@InsightHub.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 style={{ paddingLeft: '2.75rem' }}
@@ -191,3 +191,4 @@ export default function AdminLogin() {
         </div>
     );
 }
+

@@ -43,7 +43,7 @@ export default function Header() {
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                         }}>
-                            BlogHub
+                            InsightHub
                         </span>
                     </div>
                 </Link>
@@ -122,3 +122,4 @@ export default function Header() {
         </header>
     );
 }
+

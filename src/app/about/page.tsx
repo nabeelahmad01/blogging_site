@@ -2,8 +2,8 @@ import { Users, Target, Heart, Award } from 'lucide-react';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'About Us - BlogHub',
-    description: 'Learn more about BlogHub and our mission to provide quality content.',
+    title: 'About Us - InsightHub',
+    description: 'Learn more about InsightHub and our mission to provide quality content.',
 };
 
 export default function AboutPage() {
@@ -17,7 +17,7 @@ export default function AboutPage() {
                 color: 'white',
             }}>
                 <div className="container">
-                    <h1 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', marginBottom: '1rem' }}>About BlogHub</h1>
+                    <h1 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', marginBottom: '1rem' }}>About InsightHub</h1>
                     <p style={{ fontSize: '1.25rem', opacity: 0.9, maxWidth: '600px', margin: '0 auto' }}>
                         Your trusted source for insightful articles, tutorials, and tips on technology,
                         lifestyle, and personal growth.
@@ -30,14 +30,14 @@ export default function AboutPage() {
                 <div className="container" style={{ maxWidth: '800px' }}>
                     <h2 style={{ textAlign: 'center', marginBottom: '2rem' }}>Our Story</h2>
                     <p style={{ fontSize: '1.125rem', lineHeight: 1.8, color: 'var(--muted)', marginBottom: '1.5rem' }}>
-                        BlogHub was founded with a simple mission: to create a platform where knowledge meets inspiration.
+                        InsightHub was founded with a simple mission: to create a platform where knowledge meets inspiration.
                         We believe that quality content has the power to transform lives, spark new ideas, and help
                         people grow both personally and professionally.
                     </p>
                     <p style={{ fontSize: '1.125rem', lineHeight: 1.8, color: 'var(--muted)', marginBottom: '1.5rem' }}>
                         Every article we publish is crafted with care, researched thoroughly, and designed to provide
                         real value to our readers. Whether you're looking to learn something new, stay updated with
-                        the latest trends, or simply find inspiration, you'll find it here at BlogHub.
+                        the latest trends, or simply find inspiration, you'll find it here at InsightHub.
                     </p>
                     <p style={{ fontSize: '1.125rem', lineHeight: 1.8, color: 'var(--muted)' }}>
                         We're committed to building a community of curious minds who love to learn, share, and grow
@@ -140,3 +140,4 @@ export default function AboutPage() {
         </>
     );
 }
+

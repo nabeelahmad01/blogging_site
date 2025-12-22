@@ -63,7 +63,7 @@ export default async function Home() {
             backdropFilter: 'blur(10px)',
           }}>
             <Sparkles size={16} color="white" />
-            <span style={{ color: 'white', fontSize: '0.875rem', fontWeight: 500 }}>Welcome to BlogHub</span>
+            <span style={{ color: 'white', fontSize: '0.875rem', fontWeight: 500 }}>Welcome to InsightHub</span>
           </div>
 
           <h1 style={{
@@ -323,3 +323,4 @@ export default async function Home() {
     </>
   );
 }
+

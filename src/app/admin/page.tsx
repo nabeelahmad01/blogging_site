@@ -172,7 +172,7 @@ export default function AdminDashboard() {
                                 fontWeight: 800,
                                 color: 'var(--foreground)',
                             }}>
-                                BlogHub
+                                InsightHub
                             </span>
                             <p style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Admin Panel</p>
                         </div>
@@ -478,3 +478,4 @@ export default function AdminDashboard() {
         </div>
     );
 }
+

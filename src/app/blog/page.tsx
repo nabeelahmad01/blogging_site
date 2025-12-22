@@ -6,7 +6,7 @@ import AdPlaceholder from '@/components/AdPlaceholder';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'All Articles - BlogHub',
+    title: 'All Articles - InsightHub',
     description: 'Browse all our articles on technology, lifestyle, business, and more.',
 };
 
@@ -190,3 +190,4 @@ export default async function BlogPage({
         </>
     );
 }
+

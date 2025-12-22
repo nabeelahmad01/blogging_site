@@ -12,3 +12,4 @@ export default function sitemap(): MetadataRoute.Sitemap {
         { url: `${baseUrl}/terms-of-service`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.5 },
     ];
 }
+

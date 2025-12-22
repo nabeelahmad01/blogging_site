@@ -53,7 +53,7 @@ export async function generateMetadata({
     }
 
     return {
-        title: `${post.title} - BlogHub`,
+        title: `${post.title} - InsightHub`,
         description: post.excerpt,
         openGraph: {
             title: post.title,

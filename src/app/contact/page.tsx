@@ -2,8 +2,8 @@ import { Mail, MapPin, Phone, Send } from 'lucide-react';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Contact Us - BlogHub',
-    description: 'Get in touch with the BlogHub team. We\'d love to hear from you!',
+    title: 'Contact Us - InsightHub',
+    description: 'Get in touch with the InsightHub team. We\'d love to hear from you!',
 };
 
 export default function ContactPage() {
@@ -96,7 +96,7 @@ export default function ContactPage() {
                                     </div>
                                     <div>
                                         <h4 style={{ marginBottom: '0.25rem' }}>Email</h4>
-                                        <p style={{ color: 'var(--muted)' }}>contact@bloghub.com</p>
+                                        <p style={{ color: 'var(--muted)' }}>contact@InsightHub.com</p>
                                     </div>
                                 </div>
                             </div>
@@ -149,3 +149,4 @@ export default function ContactPage() {
         </>
     );
 }
+

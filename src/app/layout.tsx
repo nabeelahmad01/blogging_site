@@ -15,21 +15,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BlogHub - Your Daily Source for Insightful Articles",
+  title: "InsightHub - Your Daily Source for Insightful Articles",
   description: "Discover insightful articles, tutorials, and tips on technology, lifestyle, business, and personal growth. Join our community of readers today!",
   keywords: "blog, articles, technology, lifestyle, tutorials, tips, personal growth",
-  authors: [{ name: "BlogHub" }],
+  authors: [{ name: "InsightHub" }],
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://yourblog.com",
-    siteName: "BlogHub",
-    title: "BlogHub - Your Daily Source for Insightful Articles",
+    siteName: "InsightHub",
+    title: "InsightHub - Your Daily Source for Insightful Articles",
     description: "Discover insightful articles, tutorials, and tips on technology, lifestyle, business, and personal growth.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "BlogHub - Your Daily Source for Insightful Articles",
+    title: "InsightHub - Your Daily Source for Insightful Articles",
     description: "Discover insightful articles, tutorials, and tips on technology, lifestyle, business, and personal growth.",
   },
   robots: {
@@ -59,3 +59,4 @@ export default function RootLayout({
     </html>
   );
 }
+

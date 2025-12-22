@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Terms of Service - BlogHub',
-    description: 'Read our terms of service to understand the rules for using BlogHub.',
+    title: 'Terms of Service - InsightHub',
+    description: 'Read our terms of service to understand the rules for using InsightHub.',
 };
 
 export default function TermsOfServicePage() {
@@ -26,7 +26,7 @@ export default function TermsOfServicePage() {
                     <div className="blog-content">
                         <h2>Agreement to Terms</h2>
                         <p>
-                            These Terms of Service constitute a legally binding agreement made between you and BlogHub,
+                            These Terms of Service constitute a legally binding agreement made between you and InsightHub,
                             concerning your access to and use of our website. You agree that by accessing the Site,
                             you have read, understood, and agreed to be bound by all of these Terms of Service.
                         </p>
@@ -116,7 +116,7 @@ export default function TermsOfServicePage() {
                         <h2>Governing Law</h2>
                         <p>
                             These Terms shall be governed by and defined following the laws of your jurisdiction.
-                            BlogHub and yourself irrevocably consent that the courts shall have exclusive jurisdiction
+                            InsightHub and yourself irrevocably consent that the courts shall have exclusive jurisdiction
                             to resolve any dispute which may arise in connection with these terms.
                         </p>
 
@@ -134,8 +134,8 @@ export default function TermsOfServicePage() {
                             regarding use of the Site, please contact us at:
                         </p>
                         <p>
-                            <strong>BlogHub</strong><br />
-                            Email: legal@bloghub.com<br />
+                            <strong>InsightHub</strong><br />
+                            Email: legal@InsightHub.com<br />
                             Address: 123 Blog Street, Content City
                         </p>
                     </div>
@@ -144,3 +144,4 @@ export default function TermsOfServicePage() {
         </>
     );
 }
+
