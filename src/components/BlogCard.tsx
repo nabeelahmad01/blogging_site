@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { Calendar, Eye, ArrowRight } from 'lucide-react';
 import { format } from 'date-fns';
