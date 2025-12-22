@@ -1,13 +1,13 @@
 'use client';
 
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState, useLayoutEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
     const router = useRouter();
-    const [isChecking, setIsChecking] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         // Check if admin is logged in
         const isLoggedIn = localStorage.getItem('adminLoggedIn');
         const loginTime = localStorage.getItem('adminLoginTime');
@@ -17,6 +17,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
         if (!isLoggedIn || !loginTime) {
             router.replace('/secure-admin-x7k9');
+            setIsAuthenticated(false);
             return;
         }
 
@@ -26,13 +27,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             localStorage.removeItem('adminLoggedIn');
             localStorage.removeItem('adminLoginTime');
             router.replace('/secure-admin-x7k9');
+            setIsAuthenticated(false);
             return;
         }
 
-        setIsChecking(false);
+        setIsAuthenticated(true);
     }, [router]);
 
-    if (isChecking) {
+    if (isAuthenticated === null || isAuthenticated === false) {
         return (
             <div style={{
                 minHeight: '100vh',

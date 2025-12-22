@@ -39,11 +39,11 @@ export default function TermsOfServicePage() {
                         <p>
                             Unless otherwise indicated, the Site is our proprietary property and all source code,
                             databases, functionality, software, website designs, audio, video, text, photographs,
-                            and graphics on the Site (collectively, the "Content") and the trademarks, service marks,
-                            and logos contained therein (the "Marks") are owned or controlled by us or licensed to us.
+                            and graphics on the Site (collectively, the &quot;Content&quot;) and the trademarks, service marks,
+                            and logos contained therein (the &quot;Marks&quot;) are owned or controlled by us or licensed to us.
                         </p>
                         <p>
-                            The Content and the Marks are provided on the Site "AS IS" for your information and
+                            The Content and the Marks are provided on the Site &quot;AS IS&quot; for your information and
                             personal use only. Except as expressly provided in these Terms of Service, no part of
                             the Site and no Content or Marks may be copied, reproduced, aggregated, republished,
                             uploaded, posted, publicly displayed, encoded, translated, transmitted, distributed,
@@ -70,7 +70,7 @@ export default function TermsOfServicePage() {
                             <li>Engage in unauthorized framing of or linking to the Site</li>
                             <li>Trick, defraud, or mislead us and other users</li>
                             <li>Attempt to bypass any measures of the Site designed to prevent or restrict access</li>
-                            <li>Upload or transmit viruses, Trojan horses, or other material that interferes with any party's uninterrupted use and enjoyment of the Site</li>
+                            <li>Upload or transmit viruses, Trojan horses, or other material that interferes with any party&apos;s uninterrupted use and enjoyment of the Site</li>
                         </ul>
 
                         <h2>User Generated Contributions</h2>

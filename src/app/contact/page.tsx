@@ -19,7 +19,7 @@ export default function ContactPage() {
                 <div className="container">
                     <h1 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', marginBottom: '1rem' }}>Contact Us</h1>
                     <p style={{ fontSize: '1.25rem', opacity: 0.9, maxWidth: '600px', margin: '0 auto' }}>
-                        Have a question or feedback? We'd love to hear from you!
+                        Have a question or feedback? We&apos;d love to hear from you!
                     </p>
                 </div>
             </section>
@@ -75,7 +75,7 @@ export default function ContactPage() {
                                 <h2 style={{ marginBottom: '1rem' }}>Get in Touch</h2>
                                 <p style={{ color: 'var(--muted)', lineHeight: 1.7 }}>
                                     Whether you have a question about our content, want to collaborate, or just want to
-                                    say hello, we're here for you. Fill out the form or reach out directly through our
+                                    say hello, we&apos;re here for you. Fill out the form or reach out directly through our
                                     contact information below.
                                 </p>
                             </div>
