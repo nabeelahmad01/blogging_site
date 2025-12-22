@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
-import { Menu, X, Search, PenSquare } from 'lucide-react';
+import { Menu, X, Search } from 'lucide-react';
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -24,18 +25,14 @@ export default function Header() {
             }}>
                 {/* Logo */}
                 <Link href="/" style={{ textDecoration: 'none' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <div style={{
-                            width: '40px',
-                            height: '40px',
-                            background: 'linear-gradient(135deg, var(--gradient-start), var(--gradient-end))',
-                            borderRadius: '0.75rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}>
-                            <PenSquare size={22} color="white" />
-                        </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <Image
+                            src="/images/logo.png"
+                            alt="InsightHub Logo"
+                            width={40}
+                            height={40}
+                            style={{ borderRadius: '0.75rem' }}
+                        />
                         <span style={{
                             fontSize: '1.5rem',
                             fontWeight: 800,

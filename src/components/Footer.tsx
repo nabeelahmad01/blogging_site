@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Facebook, Twitter, Instagram, Linkedin, Mail, Heart } from 'lucide-react';
 
 export default function Footer() {
@@ -20,16 +21,25 @@ export default function Footer() {
                 }}>
                     {/* Brand */}
                     <div>
-                        <h3 style={{
-                            fontSize: '1.5rem',
-                            fontWeight: 800,
-                            marginBottom: '1rem',
-                            background: 'linear-gradient(135deg, var(--gradient-start), var(--gradient-end))',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                        }}>
-                            InsightHub
-                        </h3>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+                            <Image
+                                src="/images/logo.png"
+                                alt="InsightHub Logo"
+                                width={40}
+                                height={40}
+                                style={{ borderRadius: '0.75rem' }}
+                            />
+                            <h3 style={{
+                                fontSize: '1.5rem',
+                                fontWeight: 800,
+                                background: 'linear-gradient(135deg, var(--gradient-start), var(--gradient-end))',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                margin: 0,
+                            }}>
+                                InsightHub
+                            </h3>
+                        </div>
                         <p style={{ color: 'var(--muted)', fontSize: '0.9rem', lineHeight: 1.7 }}>
                             Your daily source for insightful articles, tutorials, and tips on technology,
                             lifestyle, and personal growth.
