@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
 :root {
   --background: #ffffff;
@@ -21,7 +21,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
-  --font-sans: 'Inter', sans-serif;
+  --font-sans: "Inter", sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -43,19 +43,31 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
   line-height: 1.7;
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 700;
   line-height: 1.3;
 }
 
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.5rem; }
+h1 {
+  font-size: 2.5rem;
+}
+h2 {
+  font-size: 2rem;
+}
+h3 {
+  font-size: 1.5rem;
+}
 
 /* Container */
 .container {
@@ -80,7 +92,11 @@ h3 { font-size: 1.5rem; }
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  background: linear-gradient(
+    135deg,
+    var(--gradient-start),
+    var(--gradient-end)
+  );
   color: white;
 }
 
@@ -124,7 +140,8 @@ h3 { font-size: 1.5rem; }
 }
 
 /* Form elements */
-.input, .textarea {
+.input,
+.textarea {
   width: 100%;
   padding: 0.875rem 1rem;
   border: 2px solid var(--border);
@@ -135,7 +152,8 @@ h3 { font-size: 1.5rem; }
   transition: border-color 0.2s ease;
 }
 
-.input:focus, .textarea:focus {
+.input:focus,
+.textarea:focus {
   outline: none;
   border-color: var(--primary);
 }
@@ -149,7 +167,11 @@ h3 { font-size: 1.5rem; }
 .badge {
   display: inline-block;
   padding: 0.25rem 0.75rem;
-  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  background: linear-gradient(
+    135deg,
+    var(--gradient-start),
+    var(--gradient-end)
+  );
   color: white;
   font-size: 0.75rem;
   font-weight: 600;
@@ -197,7 +219,8 @@ h3 { font-size: 1.5rem; }
   margin-bottom: 1.25rem;
 }
 
-.blog-content ul, .blog-content ol {
+.blog-content ul,
+.blog-content ol {
   margin-bottom: 1.25rem;
   padding-left: 1.5rem;
 }
@@ -256,8 +279,13 @@ h3 { font-size: 1.5rem; }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 .animate-pulse {
@@ -266,7 +294,11 @@ h3 { font-size: 1.5rem; }
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  background: linear-gradient(
+    135deg,
+    var(--gradient-start),
+    var(--gradient-end)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -283,10 +315,14 @@ h3 { font-size: 1.5rem; }
   .blog-grid {
     grid-template-columns: 1fr;
   }
-  
-  h1 { font-size: 2rem; }
-  h2 { font-size: 1.5rem; }
-  
+
+  h1 {
+    font-size: 2rem;
+  }
+  h2 {
+    font-size: 1.5rem;
+  }
+
   .container {
     padding: 0 1rem;
   }
@@ -381,7 +417,11 @@ h3 { font-size: 1.5rem; }
 
 /* Stats cards */
 .stat-card {
-  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  background: linear-gradient(
+    135deg,
+    var(--gradient-start),
+    var(--gradient-end)
+  );
   color: white;
   border-radius: 1rem;
   padding: 1.5rem;
@@ -395,4 +435,49 @@ h3 { font-size: 1.5rem; }
 .stat-card p {
   opacity: 0.9;
   font-size: 0.875rem;
+}
+
+/* Admin Panel Responsive Styles */
+@media (max-width: 768px) {
+  .admin-sidebar {
+    width: 100% !important;
+    min-height: auto !important;
+    position: relative !important;
+    padding: 1rem !important;
+  }
+
+  .admin-nav-item {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .stat-card {
+    padding: 1rem;
+  }
+
+  .stat-card h3 {
+    font-size: 1.75rem;
+  }
+
+  /* Make tables horizontally scrollable on mobile */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-card {
+    padding: 0.875rem;
+  }
+
+  .stat-card h3 {
+    font-size: 1.5rem;
+  }
+
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -58,9 +58,9 @@ export default function AdminDashboard() {
     const [newCategory, setNewCategory] = useState('');
 
     // Fetch data on mount
-    useState(() => {
+    useEffect(() => {
         fetchData();
-    });
+    }, []);
 
     async function fetchData() {
         try {
@@ -212,10 +212,28 @@ export default function AdminDashboard() {
 
                 {/* Footer */}
                 <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem' }}>
-                    <Link href="/" className="admin-nav-item" style={{ textDecoration: 'none' }}>
-                        <LogOut size={20} />
-                        Back to Site
+                    <Link href="/" className="admin-nav-item" style={{ textDecoration: 'none', marginBottom: '0.5rem' }}>
+                        <Eye size={20} />
+                        View Site
                     </Link>
+                    <button
+                        onClick={() => {
+                            localStorage.removeItem('adminLoggedIn');
+                            localStorage.removeItem('adminLoginTime');
+                            router.push('/secure-admin-x7k9');
+                        }}
+                        className="admin-nav-item"
+                        style={{
+                            width: '100%',
+                            border: 'none',
+                            cursor: 'pointer',
+                            background: 'transparent',
+                            color: '#dc2626',
+                        }}
+                    >
+                        <LogOut size={20} />
+                        Logout
+                    </button>
                 </div>
             </aside>
 
