@@ -35,6 +35,7 @@ model Post {
   excerpt     String
   content     String
   featuredImg String?
+  faqs        String?   // JSON string for FAQs: [{question, answer}]
   published   Boolean   @default(false)
   categoryId  String
   category    Category  @relation(fields: [categoryId], references: [id])
