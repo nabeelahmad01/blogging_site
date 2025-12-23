@@ -1,269 +1,475 @@
-'use client';
+"use client";
 
-import { useState, useEffect, use } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { ArrowLeft, Save, Eye, Trash2 } from 'lucide-react';
+import { useState, useEffect, use } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft, Save, Trash2, Plus } from "lucide-react";
 
 interface Category {
-    id: string;
-    name: string;
-    slug: string;
+  id: string;
+  name: string;
+  slug: string;
 }
 
-export default function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = use(params);
-    const router = useRouter();
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
-    const [form, setForm] = useState({
-        title: '',
-        excerpt: '',
-        content: '',
-        categoryId: '',
-        tags: '',
-        featuredImg: '',
-        published: false,
-    });
+interface FAQ {
+  question: string;
+  answer: string;
+}
 
-    useEffect(() => {
-        Promise.all([
-            fetch('/api/categories').then(res => res.json()),
-            fetch(`/api/posts/${id}`).then(res => res.json()),
-        ]).then(([categoriesData, postData]) => {
-            setCategories(categoriesData);
-            setForm({
-                title: postData.title || '',
-                excerpt: postData.excerpt || '',
-                content: postData.content || '',
-                categoryId: postData.categoryId || '',
-                tags: postData.tags || '',
-                featuredImg: postData.featuredImg || '',
-                published: postData.published || false,
-            });
-            setLoading(false);
-        }).catch(error => {
-            console.error('Error fetching data:', error);
-            setLoading(false);
+export default function EditPostPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
+  const router = useRouter();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
+  const [form, setForm] = useState({
+    title: "",
+    excerpt: "",
+    content: "",
+    categoryId: "",
+    tags: "",
+    featuredImg: "",
+    published: false,
+  });
+
+  useEffect(() => {
+    Promise.all([
+      fetch("/api/categories").then((res) => res.json()),
+      fetch(`/api/posts/${id}`).then((res) => res.json()),
+    ])
+      .then(([categoriesData, postData]) => {
+        setCategories(categoriesData);
+        setForm({
+          title: postData.title || "",
+          excerpt: postData.excerpt || "",
+          content: postData.content || "",
+          categoryId: postData.categoryId || "",
+          tags: postData.tags || "",
+          featuredImg: postData.featuredImg || "",
+          published: postData.published || false,
         });
-    }, [id]);
-
-    async function handleSubmit(e: React.FormEvent, publish?: boolean) {
-        e.preventDefault();
-
-        if (!form.title || !form.excerpt || !form.content || !form.categoryId) {
-            alert('Please fill in all required fields');
-            return;
+        // Parse existing FAQs
+        if (postData.faqs) {
+          try {
+            setFaqs(JSON.parse(postData.faqs));
+          } catch {
+            setFaqs([]);
+          }
         }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      });
+  }, [id]);
 
-        setSaving(true);
+  async function handleSubmit(e: React.FormEvent, publish?: boolean) {
+    e.preventDefault();
 
-        try {
-            const res = await fetch(`/api/posts/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    ...form,
-                    published: publish !== undefined ? publish : form.published
-                }),
-            });
-
-            if (res.ok) {
-                router.push('/admin');
-            } else {
-                const error = await res.json();
-                alert(error.error || 'Failed to update post');
-            }
-        } catch (error) {
-            console.error('Error updating post:', error);
-            alert('Failed to update post');
-        } finally {
-            setSaving(false);
-        }
+    if (!form.title || !form.excerpt || !form.content || !form.categoryId) {
+      alert("Please fill in all required fields");
+      return;
     }
 
-    async function handleDelete() {
-        if (!confirm('Are you sure you want to delete this post?')) return;
+    setSaving(true);
 
-        try {
-            const res = await fetch(`/api/posts/${id}`, { method: 'DELETE' });
-            if (res.ok) {
-                router.push('/admin');
-            }
-        } catch (error) {
-            console.error('Error deleting post:', error);
-        }
+    try {
+      const res = await fetch(`/api/posts/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          published: publish !== undefined ? publish : form.published,
+          faqs: faqs.length > 0 ? JSON.stringify(faqs) : null,
+        }),
+      });
+
+      if (res.ok) {
+        router.push("/admin");
+      } else {
+        const error = await res.json();
+        alert(error.error || "Failed to update post");
+      }
+    } catch (error) {
+      console.error("Error updating post:", error);
+      alert("Failed to update post");
+    } finally {
+      setSaving(false);
     }
+  }
 
-    if (loading) {
-        return (
-            <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                minHeight: '50vh'
-            }}>
-                <div className="animate-pulse">Loading...</div>
-            </div>
-        );
+  async function handleDelete() {
+    if (!confirm("Are you sure you want to delete this post?")) return;
+
+    try {
+      const res = await fetch(`/api/posts/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        router.push("/admin");
+      }
+    } catch (error) {
+      console.error("Error deleting post:", error);
     }
+  }
 
+  if (loading) {
     return (
-        <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem' }}>
-            <div style={{ marginBottom: '2rem' }}>
-                <Link
-                    href="/admin"
-                    style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        color: 'var(--muted)',
-                        textDecoration: 'none',
-                        marginBottom: '1rem',
-                    }}
-                >
-                    <ArrowLeft size={16} /> Back to Dashboard
-                </Link>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h1>Edit Post</h1>
-                    <button
-                        onClick={handleDelete}
-                        className="btn btn-outline"
-                        style={{ color: 'red' }}
-                    >
-                        <Trash2 size={18} /> Delete
-                    </button>
-                </div>
-            </div>
-
-            <form onSubmit={(e) => handleSubmit(e)}>
-                <div className="card" style={{ padding: '2rem' }}>
-                    {/* Title */}
-                    <div style={{ marginBottom: '1.5rem' }}>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>
-                            Title <span style={{ color: 'red' }}>*</span>
-                        </label>
-                        <input
-                            type="text"
-                            className="input"
-                            placeholder="Enter post title..."
-                            value={form.title}
-                            onChange={(e) => setForm({ ...form, title: e.target.value })}
-                            required
-                        />
-                    </div>
-
-                    {/* Category */}
-                    <div style={{ marginBottom: '1.5rem' }}>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>
-                            Category <span style={{ color: 'red' }}>*</span>
-                        </label>
-                        <select
-                            className="input"
-                            value={form.categoryId}
-                            onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
-                            required
-                        >
-                            <option value="">Select a category...</option>
-                            {categories.map(cat => (
-                                <option key={cat.id} value={cat.id}>{cat.name}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    {/* Excerpt */}
-                    <div style={{ marginBottom: '1.5rem' }}>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>
-                            Excerpt <span style={{ color: 'red' }}>*</span>
-                        </label>
-                        <textarea
-                            className="textarea"
-                            placeholder="Write a short excerpt for the post..."
-                            value={form.excerpt}
-                            onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
-                            style={{ minHeight: '80px' }}
-                            required
-                        />
-                    </div>
-
-                    {/* Content */}
-                    <div style={{ marginBottom: '1.5rem' }}>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>
-                            Content <span style={{ color: 'red' }}>*</span>
-                        </label>
-                        <textarea
-                            className="textarea"
-                            placeholder="Write your blog post content here... (HTML supported)"
-                            value={form.content}
-                            onChange={(e) => setForm({ ...form, content: e.target.value })}
-                            style={{ minHeight: '400px', fontFamily: 'monospace' }}
-                            required
-                        />
-                        <p style={{ fontSize: '0.75rem', color: 'var(--muted)', marginTop: '0.25rem' }}>
-                            You can use HTML tags for formatting
-                        </p>
-                    </div>
-
-                    {/* Featured Image URL */}
-                    <div style={{ marginBottom: '1.5rem' }}>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>
-                            Featured Image URL
-                        </label>
-                        <input
-                            type="url"
-                            className="input"
-                            placeholder="https://example.com/image.jpg"
-                            value={form.featuredImg}
-                            onChange={(e) => setForm({ ...form, featuredImg: e.target.value })}
-                        />
-                    </div>
-
-                    {/* Tags */}
-                    <div style={{ marginBottom: '1.5rem' }}>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>
-                            Tags
-                        </label>
-                        <input
-                            type="text"
-                            className="input"
-                            placeholder="technology, tips, tutorial"
-                            value={form.tags}
-                            onChange={(e) => setForm({ ...form, tags: e.target.value })}
-                        />
-                    </div>
-
-                    {/* Status */}
-                    <div style={{ marginBottom: '1.5rem' }}>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
-                            <input
-                                type="checkbox"
-                                checked={form.published}
-                                onChange={(e) => setForm({ ...form, published: e.target.checked })}
-                                style={{ width: '18px', height: '18px' }}
-                            />
-                            <span style={{ fontWeight: 600 }}>Published</span>
-                        </label>
-                    </div>
-
-                    {/* Actions */}
-                    <div style={{
-                        display: 'flex',
-                        gap: '1rem',
-                        justifyContent: 'flex-end',
-                        paddingTop: '1.5rem',
-                        borderTop: '1px solid var(--border)',
-                    }}>
-                        <button
-                            type="submit"
-                            className="btn btn-primary"
-                            disabled={saving}
-                        >
-                            <Save size={18} /> {saving ? 'Saving...' : 'Save Changes'}
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "50vh",
+        }}
+      >
+        <div className="animate-pulse">Loading...</div>
+      </div>
     );
+  }
+
+  return (
+    <div style={{ maxWidth: "900px", margin: "0 auto", padding: "2rem" }}>
+      <div style={{ marginBottom: "2rem" }}>
+        <Link
+          href="/admin"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            color: "var(--muted)",
+            textDecoration: "none",
+            marginBottom: "1rem",
+          }}
+        >
+          <ArrowLeft size={16} /> Back to Dashboard
+        </Link>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <h1>Edit Post</h1>
+          <button
+            onClick={handleDelete}
+            className="btn btn-outline"
+            style={{ color: "red" }}
+          >
+            <Trash2 size={18} /> Delete
+          </button>
+        </div>
+      </div>
+
+      <form onSubmit={(e) => handleSubmit(e)}>
+        <div className="card" style={{ padding: "2rem" }}>
+          {/* Title */}
+          <div style={{ marginBottom: "1.5rem" }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                fontWeight: 600,
+              }}
+            >
+              Title <span style={{ color: "red" }}>*</span>
+            </label>
+            <input
+              type="text"
+              className="input"
+              placeholder="Enter post title..."
+              value={form.title}
+              onChange={(e) => setForm({ ...form, title: e.target.value })}
+              required
+            />
+          </div>
+
+          {/* Category */}
+          <div style={{ marginBottom: "1.5rem" }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                fontWeight: 600,
+              }}
+            >
+              Category <span style={{ color: "red" }}>*</span>
+            </label>
+            <select
+              className="input"
+              value={form.categoryId}
+              onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
+              required
+            >
+              <option value="">Select a category...</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Excerpt */}
+          <div style={{ marginBottom: "1.5rem" }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                fontWeight: 600,
+              }}
+            >
+              Excerpt <span style={{ color: "red" }}>*</span>
+            </label>
+            <textarea
+              className="textarea"
+              placeholder="Write a short excerpt for the post..."
+              value={form.excerpt}
+              onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
+              style={{ minHeight: "80px" }}
+              required
+            />
+          </div>
+
+          {/* Content */}
+          <div style={{ marginBottom: "1.5rem" }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                fontWeight: 600,
+              }}
+            >
+              Content <span style={{ color: "red" }}>*</span>
+            </label>
+            <textarea
+              className="textarea"
+              placeholder="Write your blog post content here... (HTML supported)"
+              value={form.content}
+              onChange={(e) => setForm({ ...form, content: e.target.value })}
+              style={{ minHeight: "400px", fontFamily: "monospace" }}
+              required
+            />
+            <p
+              style={{
+                fontSize: "0.75rem",
+                color: "var(--muted)",
+                marginTop: "0.25rem",
+              }}
+            >
+              You can use HTML tags for formatting
+            </p>
+          </div>
+
+          {/* Featured Image URL */}
+          <div style={{ marginBottom: "1.5rem" }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                fontWeight: 600,
+              }}
+            >
+              Featured Image URL
+            </label>
+            <input
+              type="text"
+              className="input"
+              placeholder="/images/blog-example.png or https://example.com/image.jpg"
+              value={form.featuredImg}
+              onChange={(e) =>
+                setForm({ ...form, featuredImg: e.target.value })
+              }
+            />
+          </div>
+
+          {/* Tags */}
+          <div style={{ marginBottom: "1.5rem" }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                fontWeight: 600,
+              }}
+            >
+              Tags
+            </label>
+            <input
+              type="text"
+              className="input"
+              placeholder="technology, tips, tutorial"
+              value={form.tags}
+              onChange={(e) => setForm({ ...form, tags: e.target.value })}
+            />
+          </div>
+
+          {/* FAQs Section */}
+          <div style={{ marginBottom: "1.5rem" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "0.5rem",
+              }}
+            >
+              <label style={{ fontWeight: 600 }}>
+                FAQs (Frequently Asked Questions)
+              </label>
+              <button
+                type="button"
+                onClick={() => setFaqs([...faqs, { question: "", answer: "" }])}
+                className="btn btn-secondary"
+                style={{ padding: "0.4rem 0.8rem", fontSize: "0.875rem" }}
+              >
+                <Plus size={16} /> Add FAQ
+              </button>
+            </div>
+            <p
+              style={{
+                fontSize: "0.75rem",
+                color: "var(--muted)",
+                marginBottom: "1rem",
+              }}
+            >
+              Add frequently asked questions related to this post for SEO
+            </p>
+
+            {faqs.map((faq, index) => (
+              <div
+                key={index}
+                style={{
+                  background: "var(--secondary)",
+                  padding: "1rem",
+                  borderRadius: "0.5rem",
+                  marginBottom: "1rem",
+                  position: "relative",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setFaqs(faqs.filter((_, i) => i !== index))}
+                  style={{
+                    position: "absolute",
+                    top: "0.5rem",
+                    right: "0.5rem",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    color: "#dc2626",
+                    padding: "0.25rem",
+                  }}
+                >
+                  <Trash2 size={16} />
+                </button>
+                <div style={{ marginBottom: "0.75rem" }}>
+                  <label
+                    style={{
+                      display: "block",
+                      marginBottom: "0.25rem",
+                      fontSize: "0.875rem",
+                      fontWeight: 500,
+                    }}
+                  >
+                    Question {index + 1}
+                  </label>
+                  <input
+                    type="text"
+                    className="input"
+                    placeholder="Enter the question..."
+                    value={faq.question}
+                    onChange={(e) => {
+                      const updated = [...faqs];
+                      updated[index].question = e.target.value;
+                      setFaqs(updated);
+                    }}
+                  />
+                </div>
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      marginBottom: "0.25rem",
+                      fontSize: "0.875rem",
+                      fontWeight: 500,
+                    }}
+                  >
+                    Answer
+                  </label>
+                  <textarea
+                    className="textarea"
+                    placeholder="Enter the answer..."
+                    value={faq.answer}
+                    onChange={(e) => {
+                      const updated = [...faqs];
+                      updated[index].answer = e.target.value;
+                      setFaqs(updated);
+                    }}
+                    style={{ minHeight: "80px" }}
+                  />
+                </div>
+              </div>
+            ))}
+
+            {faqs.length === 0 && (
+              <p
+                style={{
+                  color: "var(--muted)",
+                  fontSize: "0.875rem",
+                  textAlign: "center",
+                  padding: "1rem",
+                  background: "var(--secondary)",
+                  borderRadius: "0.5rem",
+                }}
+              >
+                No FAQs added yet. Click &quot;Add FAQ&quot; to add questions.
+              </p>
+            )}
+          </div>
+
+          {/* Status */}
+          <div style={{ marginBottom: "1.5rem" }}>
+            <label
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.75rem",
+                cursor: "pointer",
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={form.published}
+                onChange={(e) =>
+                  setForm({ ...form, published: e.target.checked })
+                }
+                style={{ width: "18px", height: "18px" }}
+              />
+              <span style={{ fontWeight: 600 }}>Published</span>
+            </label>
+          </div>
+
+          {/* Actions */}
+          <div
+            style={{
+              display: "flex",
+              gap: "1rem",
+              justifyContent: "flex-end",
+              paddingTop: "1.5rem",
+              borderTop: "1px solid var(--border)",
+            }}
+          >
+            <button type="submit" className="btn btn-primary" disabled={saving}>
+              <Save size={18} /> {saving ? "Saving..." : "Save Changes"}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
 }
