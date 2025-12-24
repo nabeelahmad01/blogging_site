@@ -19,31 +19,48 @@ export async function GET() {
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { title, excerpt, content, categoryId, tags, featuredImg, published } = body;
+        const { title, slug, excerpt, content, categoryId, tags, featuredImg, published, faqs } = body;
 
-        if (!title || !excerpt || !content || !categoryId) {
+        if (!title || !slug || !excerpt || !content || !categoryId) {
             return NextResponse.json(
-                { error: 'Title, excerpt, content, and category are required' },
+                { error: 'Title, slug, excerpt, content, and category are required' },
                 { status: 400 }
             );
         }
 
-        // Generate slug from title
-        const slug = title
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/^-+|-+$/g, '') + '-' + Date.now().toString(36);
+        // Validate slug format
+        const cleanSlug = slug.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/--+/g, '-').replace(/^-|-$/g, '');
+        
+        if (!cleanSlug) {
+            return NextResponse.json(
+                { error: 'Please provide a valid slug' },
+                { status: 400 }
+            );
+        }
+
+        // Check if slug already exists
+        const existingPost = await prisma.post.findUnique({
+            where: { slug: cleanSlug }
+        });
+
+        if (existingPost) {
+            return NextResponse.json(
+                { error: 'A post with this slug already exists. Please choose a different slug.' },
+                { status: 400 }
+            );
+        }
 
         const post = await prisma.post.create({
             data: {
                 title,
-                slug,
+                slug: cleanSlug,
                 excerpt,
                 content,
                 categoryId,
                 tags: tags || null,
                 featuredImg: featuredImg || null,
                 published: published || false,
+                faqs: faqs || null,
             },
             include: { category: true },
         });

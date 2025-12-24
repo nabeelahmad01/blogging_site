@@ -32,12 +32,31 @@ export async function PUT(
     try {
         const { id } = await params;
         const body = await request.json();
-        const { title, excerpt, content, categoryId, tags, featuredImg, published, faqs } = body;
+        const { title, slug, excerpt, content, categoryId, tags, featuredImg, published, faqs } = body;
+
+        // Validate slug if provided
+        let cleanSlug = slug;
+        if (slug) {
+            cleanSlug = slug.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/--+/g, '-').replace(/^-|-$/g, '');
+            
+            // Check if slug already exists for a different post
+            const existingPost = await prisma.post.findUnique({
+                where: { slug: cleanSlug }
+            });
+
+            if (existingPost && existingPost.id !== id) {
+                return NextResponse.json(
+                    { error: 'A post with this slug already exists. Please choose a different slug.' },
+                    { status: 400 }
+                );
+            }
+        }
 
         const post = await prisma.post.update({
             where: { id },
             data: {
                 title,
+                slug: cleanSlug,
                 excerpt,
                 content,
                 categoryId,

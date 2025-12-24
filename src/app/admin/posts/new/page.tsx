@@ -23,6 +23,7 @@ export default function NewPostPage() {
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [form, setForm] = useState({
     title: "",
+    slug: "",
     excerpt: "",
     content: "",
     categoryId: "",
@@ -41,8 +42,14 @@ export default function NewPostPage() {
   async function handleSubmit(e: React.FormEvent, publish: boolean = false) {
     e.preventDefault();
 
-    if (!form.title || !form.excerpt || !form.content || !form.categoryId) {
-      alert("Please fill in all required fields");
+    if (
+      !form.title ||
+      !form.slug ||
+      !form.excerpt ||
+      !form.content ||
+      !form.categoryId
+    ) {
+      alert("Please fill in all required fields including slug");
       return;
     }
 
@@ -113,6 +120,45 @@ export default function NewPostPage() {
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               required
             />
+          </div>
+
+          {/* Slug */}
+          <div style={{ marginBottom: "1.5rem" }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                fontWeight: 600,
+              }}
+            >
+              Slug (URL) <span style={{ color: "red" }}>*</span>
+            </label>
+            <input
+              type="text"
+              className="input"
+              placeholder="my-awesome-blog-post"
+              value={form.slug}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  slug: e.target.value
+                    .toLowerCase()
+                    .replace(/[^a-z0-9-]/g, "-")
+                    .replace(/--+/g, "-"),
+                })
+              }
+              required
+            />
+            <p
+              style={{
+                fontSize: "0.75rem",
+                color: "var(--muted)",
+                marginTop: "0.25rem",
+              }}
+            >
+              URL-friendly slug (lowercase, no spaces). Example:
+              best-ai-tools-2025
+            </p>
           </div>
 
           {/* Category */}
