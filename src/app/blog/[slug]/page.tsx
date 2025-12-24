@@ -98,7 +98,7 @@ export default async function BlogPostPage({
           color: "white",
         }}
       >
-        <div className="container" style={{ maxWidth: "800px" }}>
+        <div className="container">
           <Link
             href="/blog"
             style={{
@@ -123,6 +123,7 @@ export default async function BlogPostPage({
               fontWeight: 800,
               marginBottom: "1.5rem",
               lineHeight: 1.2,
+              maxWidth: "800px",
             }}
           >
             {post.title}

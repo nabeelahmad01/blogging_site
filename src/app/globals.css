@@ -165,19 +165,16 @@ h3 {
 
 /* Badge */
 .badge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  background: linear-gradient(
-    135deg,
-    var(--gradient-start),
-    var(--gradient-end)
-  );
-  color: white;
-  font-size: 0.75rem;
-  font-weight: 600;
-  border-radius: 9999px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+    display: block;
+    padding: 0.25rem 0.75rem;
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    width: max-content;
 }
 
 .badge-secondary {
