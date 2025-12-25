@@ -1,7 +1,23 @@
 import { NextResponse } from 'next/server';
+import { v2 as cloudinary } from 'cloudinary';
 import { writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
+
+// Configure Cloudinary (if credentials are available)
+const useCloudinary = !!(
+  process.env.CLOUDINARY_CLOUD_NAME &&
+  process.env.CLOUDINARY_API_KEY &&
+  process.env.CLOUDINARY_API_SECRET
+);
+
+if (useCloudinary) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+}
 
 export async function POST(request: Request) {
   try {
@@ -32,7 +48,29 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create uploads directory if it doesn't exist
+    // Convert file to buffer
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    // Try Cloudinary first if configured
+    if (useCloudinary) {
+      try {
+        const base64 = `data:${file.type};base64,${buffer.toString('base64')}`;
+        const result = await cloudinary.uploader.upload(base64, {
+          folder: 'blog-images',
+          resource_type: 'image',
+        });
+        return NextResponse.json({ 
+          url: result.secure_url, 
+          filename: result.public_id 
+        });
+      } catch (cloudinaryError) {
+        console.error('Cloudinary upload failed, falling back to local:', cloudinaryError);
+        // Fall through to local storage
+      }
+    }
+
+    // Fallback: Save to local public/uploads folder
     const uploadDir = path.join(process.cwd(), 'public', 'uploads');
     if (!existsSync(uploadDir)) {
       await mkdir(uploadDir, { recursive: true });
@@ -44,9 +82,6 @@ export async function POST(request: Request) {
     const filename = `${timestamp}-${Math.random().toString(36).substring(7)}.${extension}`;
     const filepath = path.join(uploadDir, filename);
 
-    // Convert file to buffer and save
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
     await writeFile(filepath, buffer);
 
     // Return the public URL
