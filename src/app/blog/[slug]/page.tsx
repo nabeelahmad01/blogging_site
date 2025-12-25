@@ -195,7 +195,11 @@ export default async function BlogPostPage({
                   <span
                     key={tag}
                     className="badge badge-secondary"
-                    style={{ marginRight: "0.5rem" }}
+                    style={{
+                      marginRight: "0.5rem",
+                      display: "inline-flex",
+                      marginBottom: "10px",
+                    }}
                   >
                     {tag.trim()}
                   </span>
