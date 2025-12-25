@@ -24,8 +24,20 @@
   --font-sans: "Inter", sans-serif;
 }
 
+/* Dark mode via class toggle */
+html.dark {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --secondary: #1e293b;
+  --border: #334155;
+  --card: #1e293b;
+  --card-hover: #334155;
+  --muted: #94a3b8;
+}
+
+/* Also respect system preference if no class set */
 @media (prefers-color-scheme: dark) {
-  :root {
+  html:not(.light) {
     --background: #0f172a;
     --foreground: #f1f5f9;
     --secondary: #1e293b;
@@ -34,6 +46,12 @@
     --card-hover: #334155;
     --muted: #94a3b8;
   }
+}
+
+/* Dark mode header fix */
+html.dark header,
+html.dark .header {
+  background: rgba(15, 23, 42, 0.8) !important;
 }
 
 * {
@@ -165,16 +183,20 @@ h3 {
 
 /* Badge */
 .badge {
-    display: block;
-    padding: 0.25rem 0.75rem;
-    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-    color: white;
-    font-size: 0.75rem;
-    font-weight: 600;
-    border-radius: 9999px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    width: max-content;
+  display: block;
+  padding: 0.25rem 0.75rem;
+  background: linear-gradient(
+    135deg,
+    var(--gradient-start),
+    var(--gradient-end)
+  );
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  width: max-content;
 }
 
 .badge-secondary {

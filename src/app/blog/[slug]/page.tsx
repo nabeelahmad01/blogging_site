@@ -1,12 +1,15 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Calendar, Eye, ArrowLeft, User } from "lucide-react";
+import { Calendar, Eye, ArrowLeft, User, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { prisma } from "@/lib/prisma";
 import ShareButtons from "@/components/ShareButtons";
 import AdPlaceholder from "@/components/AdPlaceholder";
 import BlogCard from "@/components/BlogCard";
+import CommentSection from "@/components/CommentSection";
+import TableOfContents from "@/components/TableOfContents";
 import { Metadata } from "next";
+import { calculateReadingTime, addHeadingIds } from "@/lib/utils";
 
 async function getPost(slug: string) {
   try {
@@ -21,9 +24,46 @@ async function getPost(slug: string) {
   }
 }
 
-async function getRelatedPosts(categoryId: string, currentSlug: string) {
+async function getRelatedPosts(
+  categoryId: string,
+  currentSlug: string,
+  tags: string | null
+) {
   try {
-    const posts = await prisma.post.findMany({
+    // First try to find posts with matching tags
+    if (tags) {
+      const tagList = tags.split(",").map((t) => t.trim());
+      const tagPosts = await prisma.post.findMany({
+        where: {
+          published: true,
+          NOT: { slug: currentSlug },
+          OR: tagList.map((tag) => ({ tags: { contains: tag } })),
+        },
+        include: { category: true },
+        take: 3,
+      });
+
+      if (tagPosts.length >= 3) {
+        return tagPosts;
+      }
+
+      // Fill with category posts if needed
+      const categoryPosts = await prisma.post.findMany({
+        where: {
+          published: true,
+          categoryId,
+          NOT: { slug: currentSlug },
+          id: { notIn: tagPosts.map((p) => p.id) },
+        },
+        include: { category: true },
+        take: 3 - tagPosts.length,
+      });
+
+      return [...tagPosts, ...categoryPosts];
+    }
+
+    // No tags, just get category posts
+    return await prisma.post.findMany({
       where: {
         published: true,
         categoryId,
@@ -32,7 +72,6 @@ async function getRelatedPosts(categoryId: string, currentSlug: string) {
       include: { category: true },
       take: 3,
     });
-    return posts;
   } catch {
     return [];
   }
@@ -81,10 +120,20 @@ export default async function BlogPostPage({
     notFound();
   }
 
-  const relatedPosts = await getRelatedPosts(post.categoryId, post.slug);
+  const relatedPosts = await getRelatedPosts(
+    post.categoryId,
+    post.slug,
+    post.tags
+  );
   const postUrl = `${
     process.env.NEXT_PUBLIC_SITE_URL || "https://yourblog.com"
   }/blog/${post.slug}`;
+
+  // Calculate reading time
+  const readingTime = post.readingTime || calculateReadingTime(post.content);
+
+  // Add IDs to headings for TOC
+  const contentWithIds = addHeadingIds(post.content);
 
   return (
     <>
@@ -152,6 +201,11 @@ export default async function BlogPostPage({
             <span
               style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
             >
+              <Clock size={16} /> {readingTime} min read
+            </span>
+            <span
+              style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+            >
               <Eye size={16} /> {post.views} views
             </span>
           </div>
@@ -166,6 +220,7 @@ export default async function BlogPostPage({
             gridTemplateColumns: "1fr 300px",
             gap: "3rem",
           }}
+          className="blog-layout"
         >
           {/* Main Content */}
           <article>
@@ -176,7 +231,7 @@ export default async function BlogPostPage({
             <div
               className="blog-content"
               style={{ marginTop: "2rem" }}
-              dangerouslySetInnerHTML={{ __html: post.content }}
+              dangerouslySetInnerHTML={{ __html: contentWithIds }}
             />
 
             {/* Tags */}
@@ -295,43 +350,60 @@ export default async function BlogPostPage({
                 }
               })()}
 
+            {/* Comments Section */}
+            <CommentSection postId={post.id} />
+
             {/* Ad after content */}
             <AdPlaceholder size="horizontal" />
           </article>
 
           {/* Sidebar */}
-          <aside
-            style={{ display: "flex", flexDirection: "column", gap: "2rem" }}
-          >
-            <AdPlaceholder size="square" />
-
-            {/* About Author */}
+          <aside style={{ alignSelf: "flex-start" }}>
             <div
-              className="card"
-              style={{ padding: "1.5rem", textAlign: "center" }}
+              style={{
+                position: "sticky",
+                top: "100px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "2rem",
+                maxHeight: "calc(100vh - 100%)",
+                overflowY: "auto",
+              }}
             >
-              <div
-                style={{
-                  width: "80px",
-                  height: "80px",
-                  borderRadius: "50%",
-                  background:
-                    "linear-gradient(135deg, var(--gradient-start), var(--gradient-end))",
-                  margin: "0 auto 1rem",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <User size={32} color="white" />
-              </div>
-              <h4 style={{ marginBottom: "0.5rem" }}>Blog Author</h4>
-              <p style={{ color: "var(--muted)", fontSize: "0.875rem" }}>
-                Content creator passionate about sharing knowledge and insights.
-              </p>
-            </div>
+              {/* Table of Contents */}
+              <TableOfContents content={post.content} />
 
-            <AdPlaceholder size="square" />
+              <AdPlaceholder size="square" />
+
+              {/* About Author */}
+              <div
+                className="card"
+                style={{ padding: "1.5rem", textAlign: "center" }}
+              >
+                <div
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                    borderRadius: "50%",
+                    background:
+                      "linear-gradient(135deg, var(--gradient-start), var(--gradient-end))",
+                    margin: "0 auto 1rem",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <User size={32} color="white" />
+                </div>
+                <h4 style={{ marginBottom: "0.5rem" }}>Blog Author</h4>
+                <p style={{ color: "var(--muted)", fontSize: "0.875rem" }}>
+                  Content creator passionate about sharing knowledge and
+                  insights.
+                </p>
+              </div>
+
+              <AdPlaceholder size="square" />
+            </div>
           </aside>
         </div>
       </div>
@@ -359,7 +431,7 @@ export default async function BlogPostPage({
 
       <style>{`
         @media (max-width: 900px) {
-          .container > div {
+          .blog-layout {
             grid-template-columns: 1fr !important;
           }
         }

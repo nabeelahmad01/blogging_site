@@ -1,9 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Save, Eye, Plus, Trash2 } from "lucide-react";
+import {
+  ArrowLeft,
+  Save,
+  Eye,
+  Plus,
+  Trash2,
+  CloudOff,
+  CloudLightning,
+} from "lucide-react";
+import ImageUpload from "@/components/ImageUpload";
 
 interface Category {
   id: string;
@@ -31,13 +40,52 @@ export default function NewPostPage() {
     featuredImg: "",
     published: false,
   });
+  const [autoSaveStatus, setAutoSaveStatus] = useState<
+    "saved" | "saving" | "unsaved"
+  >("saved");
 
+  // Load from localStorage on mount
   useEffect(() => {
     fetch("/api/categories")
       .then((res) => res.json())
       .then((data) => setCategories(data))
       .catch(console.error);
+
+    // Load draft from localStorage
+    const savedDraft = localStorage.getItem("post-draft");
+    if (savedDraft) {
+      try {
+        const draft = JSON.parse(savedDraft);
+        setForm(draft.form || form);
+        setFaqs(draft.faqs || []);
+        setAutoSaveStatus("saved");
+      } catch {
+        // Invalid draft, ignore
+      }
+    }
   }, []);
+
+  // Auto-save to localStorage
+  const autoSave = useCallback(() => {
+    setAutoSaveStatus("saving");
+    const draft = { form, faqs, savedAt: new Date().toISOString() };
+    localStorage.setItem("post-draft", JSON.stringify(draft));
+    setTimeout(() => setAutoSaveStatus("saved"), 500);
+  }, [form, faqs]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (form.title || form.content) {
+        autoSave();
+      }
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [form, faqs, autoSave]);
+
+  // Clear draft after successful submit
+  const clearDraft = () => {
+    localStorage.removeItem("post-draft");
+  };
 
   async function handleSubmit(e: React.FormEvent, publish: boolean = false) {
     e.preventDefault();
@@ -67,6 +115,7 @@ export default function NewPostPage() {
       });
 
       if (res.ok) {
+        clearDraft();
         router.push("/admin");
       } else {
         const error = await res.json();
@@ -96,7 +145,35 @@ export default function NewPostPage() {
         >
           <ArrowLeft size={16} /> Back to Dashboard
         </Link>
-        <h1>Create New Post</h1>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <h1>Create New Post</h1>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              color: "var(--muted)",
+              fontSize: "0.875rem",
+            }}
+          >
+            {autoSaveStatus === "saving" && (
+              <>
+                <CloudLightning size={16} /> Saving...
+              </>
+            )}
+            {autoSaveStatus === "saved" && (
+              <>
+                <CloudOff size={16} /> Draft saved
+              </>
+            )}
+          </div>
+        </div>
       </div>
 
       <form onSubmit={(e) => handleSubmit(e, false)}>
@@ -263,35 +340,12 @@ export default function NewPostPage() {
             </p>
           </div>
 
-          {/* Featured Image URL */}
+          {/* Featured Image */}
           <div style={{ marginBottom: "1.5rem" }}>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                fontWeight: 600,
-              }}
-            >
-              Featured Image URL
-            </label>
-            <input
-              type="url"
-              className="input"
-              placeholder="https://example.com/image.jpg"
+            <ImageUpload
               value={form.featuredImg}
-              onChange={(e) =>
-                setForm({ ...form, featuredImg: e.target.value })
-              }
+              onChange={(url) => setForm({ ...form, featuredImg: url })}
             />
-            <p
-              style={{
-                fontSize: "0.75rem",
-                color: "var(--muted)",
-                marginTop: "0.25rem",
-              }}
-            >
-              Optional. Enter the URL of the featured image for this post.
-            </p>
           </div>
 
           {/* Tags */}

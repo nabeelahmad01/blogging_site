@@ -41,8 +41,50 @@ model Post {
   category    Category  @relation(fields: [categoryId], references: [id])
   tags        String?   // Comma-separated tags
   views       Int       @default(0)
+  readingTime Int?      // in minutes
+  authorId    String?
+  author      Author?   @relation(fields: [authorId], references: [id])
+  comments    Comment[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  name      String
+  email     String
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  approved  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  active    Boolean  @default(true)
+}
+
+model Author {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  bio       String?
+  avatar    String?
+  posts     Post[]
+  createdAt DateTime @default(now())
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
 }
 
 model SiteSettings {

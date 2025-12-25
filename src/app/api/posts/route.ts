@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { calculateReadingTime } from '@/lib/utils';
 
 // GET all posts
 export async function GET() {
@@ -50,6 +51,9 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        // Calculate reading time
+        const readingTime = calculateReadingTime(content);
+
         const post = await prisma.post.create({
             data: {
                 title,
@@ -61,6 +65,7 @@ export async function POST(request: NextRequest) {
                 featuredImg: featuredImg || null,
                 published: published || false,
                 faqs: faqs || null,
+                readingTime,
             },
             include: { category: true },
         });
